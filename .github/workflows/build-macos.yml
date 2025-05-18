@@ -1,0 +1,36 @@
+name: Build & Release macOS .dmg
+
+on:
+    push:
+      tags:
+        - 'v*' # e.g., v1.0.0
+
+jobs:
+  build-and-release:
+    name: Build Tauri macOS App and Upload .dmg
+    runs-on: macos-latest
+
+     steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🦀 Install Rust Stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
+
+      - name: 📦 Install pnpm & Dependencies
+        run: |
+          corepack enable
+          pnpm install
+
+       - name: 🛠️ Build .dmg via Tauri
+        run: |
+          pnpm tauri build --bundles dmg
+
+      - name: 📤 Upload .dmg to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: src-tauri/target/release/bundle/dmg/*.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
