@@ -1,16 +1,16 @@
 name: Build & Release macOS .dmg
 
 on:
-    push:
-      tags:
-        - 'v*' # e.g., v1.0.0
+  push:
+    tags:
+      - "v*" # e.g., v1.0.0
 
 jobs:
   build-and-release:
     name: Build Tauri macOS App and Upload .dmg
     runs-on: macos-latest
 
-     steps:
+    steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
@@ -24,7 +24,7 @@ jobs:
           corepack enable
           pnpm install
 
-       - name: 🛠️ Build .dmg via Tauri
+      - name: 🛠️ Build .dmg via Tauri
         run: |
           pnpm tauri build --bundles dmg
 
